@@ -1,0 +1,5 @@
+{
+  "name": "Excel Smart-Print Pro",
+  "description": "Professional tool to parse Excel files and generate optimized printable documents with automatic page breaks based on column value changes.",
+  "requestFramePermissions": []
+}
