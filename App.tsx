@@ -15,18 +15,18 @@ const App: React.FC = () => {
   const [isExporting, setIsExporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Layout State
+  // Layout State with updated defaults: Font 11pt, Row 33px, Specific Col Widths
   const [orientation, setOrientation] = useState<'portrait' | 'landscape'>('portrait');
-  const [globalRowHeight, setGlobalRowHeight] = useState<number>(32);
-  const [globalFontSize, setGlobalFontSize] = useState<number>(8.5);
-  const [colWidths, setColWidths] = useState<number[]>(new Array(9).fill(80)); 
+  const [globalRowHeight, setGlobalRowHeight] = useState<number>(33);
+  const [globalFontSize, setGlobalFontSize] = useState<number>(11);
+  const [colWidths, setColWidths] = useState<number[]>([40, 139, 316, 130, 78, 74, 80, 90, 190]); 
 
   // Constants
   const PRINT_COLS_START = 4;
   const COL_COUNT = 9;
   
-  // Dynamic Page Limit for A4
-  const maxRowsPerPage = orientation === 'portrait' ? 50 : 30;
+  // Fixed Row Limit per Page
+  const maxRowsPerPage = 41;
 
   // Calculate total table width
   const totalTableWidth = useMemo(() => colWidths.reduce((acc, curr) => acc + curr, 0), [colWidths]);
@@ -102,7 +102,7 @@ const App: React.FC = () => {
     }
 
     setPages(groups);
-  }, [allDataRows, orientation, maxRowsPerPage]);
+  }, [allDataRows, maxRowsPerPage]);
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -165,9 +165,9 @@ const App: React.FC = () => {
       dynamicName = `${safeSiteName}_${sdnId || 'SDN'}`;
     }
 
-    // PDF configuration with requested Top, Left, Right margins
+    // PDF configuration with increased Top Margin (20mm instead of 12mm)
     const opt = {
-      margin: [12, 10, 10, 10], // [top, left, bottom, right] in mm
+      margin: [20, 10, 10, 10], // [top, left, bottom, right] in mm
       filename: `${dynamicName}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
@@ -234,7 +234,7 @@ const App: React.FC = () => {
         @media print {
           @page {
             size: A4 ${orientation};
-            margin: 10mm;
+            margin: 20mm 10mm 10mm 10mm; /* Increased top margin for direct browser print */
           }
         }
       `}</style>
@@ -392,20 +392,20 @@ const App: React.FC = () => {
                           <div className="flex gap-4 items-center mt-1">
                             <span className="flex gap-1">
                               <span className="header-label">SDN ID:</span>
-                              <span className="text-[11pt] font-black">{page.siteHeader.sdnId}</span>
+                              <span className="text-[12.5pt] font-black">{page.siteHeader.sdnId}</span>
                             </span>
                             <span className="flex gap-1 border-l border-gray-300 pl-3">
                               <span className="header-label">TYPE:</span>
-                              <span className="text-[9pt] font-black uppercase">{page.siteHeader.sdnType}</span>
+                              <span className="text-[10.5pt] font-black uppercase">{page.siteHeader.sdnType}</span>
                             </span>
                           </div>
                         </div>
                         <div className="flex flex-col items-end">
-                          <div className="flex gap-3 text-[8pt] font-bold">
+                          <div className="flex gap-3 text-[9.5pt] font-bold">
                             <span className="flex gap-1"><span className="header-label">SDN</span>{page.siteHeader.sdnDate}</span>
                             <span className="flex gap-1"><span className="header-label">REQ</span>{page.siteHeader.reqDate}</span>
                           </div>
-                          <div className="flex gap-4 text-[8pt] font-black border-t border-black mt-1 pt-0.5">
+                          <div className="flex gap-4 text-[9.5pt] font-black border-t border-black mt-1 pt-0.5">
                             <span className="flex gap-1"><span className="header-label">SZS</span>{page.siteHeader.szsPob}</span>
                             <span className="flex gap-1"><span className="header-label">CLIENT</span>{page.siteHeader.clientPob}</span>
                           </div>
